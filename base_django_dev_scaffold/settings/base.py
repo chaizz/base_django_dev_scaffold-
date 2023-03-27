@@ -123,8 +123,16 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+# rest framework 设置
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication', ]
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication', ],
+
+    # 全局接口版本
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",  # 正则形式
+    "ALLOWED_VERSIONS": ["v1"],  # 允许的版本
+    "VERSION_PARAM": "version",  # 参数
+    "DEFAULT_VERSION": "v1",  # 默认版本
 }
 
 AUTH_USER_MODEL = "system.Users"
