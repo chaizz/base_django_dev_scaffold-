@@ -13,6 +13,7 @@ pandas = "^1.5.3"
 djangorestframework = "^3.14.0"
 django-filter = "^22.1"
 mysqlclient = "^2.1.1"
+django-comment-migrate = "^0.1.7"
 
 
 [[tool.poetry.source]]

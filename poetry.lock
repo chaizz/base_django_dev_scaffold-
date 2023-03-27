@@ -47,6 +47,26 @@ url = "https://mirrors.aliyun.com/pypi/simple"
 reference = "ali"
 
 [[package]]
+name = "django-comment-migrate"
+version = "0.1.7"
+description = "An app that provides Django model comment migration"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "django-comment-migrate-0.1.7.tar.gz", hash = "sha256:13e9d613e9a1f4af7fb212052bd4e6f79c288503d0be38061c2871f8a5c501aa"},
+    {file = "django_comment_migrate-0.1.7-py3-none-any.whl", hash = "sha256:6545b447f603ac8ff367f73a569af9de3ba53ae81dc344aa36fcb4761c22d161"},
+]
+
+[package.dependencies]
+django = ">=2.2"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.aliyun.com/pypi/simple"
+reference = "ali"
+
+[[package]]
 name = "django-filter"
 version = "22.1"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
@@ -297,4 +317,4 @@ reference = "ali"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "f0da7495ba89c5f526cdb39cc4d752a48f24120bc4b8feeb52744c66bf271c4f"
+content-hash = "8327a64c6438c4e4cb3ded4f85f2d2887dbf0a7bb658842c01ce96bc8b7183a5"
