@@ -14,6 +14,8 @@ djangorestframework = "^3.14.0"
 django-filter = "^22.1"
 mysqlclient = "^2.1.1"
 django-comment-migrate = "^0.1.7"
+django-log-request-id = "^2.1.0"
+colorlog = "^6.7.0"
 
 
 [[tool.poetry.source]]
