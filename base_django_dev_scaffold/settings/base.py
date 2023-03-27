@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import logging.config
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -125,5 +126,53 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication', ]
 }
 
-
 AUTH_USER_MODEL = "system.Users"
+
+LOGGING_CONFIG = None  # This empties out Django's logging config
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "()": "colorlog.ColoredFormatter",
+            "format": "%(log_color)s %(levelname)-8s %(asctime)s %(request_id)s  %(process)s --- "
+                      "%(lineno)-8s [%(name)s] %(funcName)-24s : %(message)s",
+            "log_colors": {
+                "DEBUG": "blue",
+                "INFO": "white",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "bold_red",
+            },
+        },
+        "simple": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "filters": {
+        "request_id": {"()": "log_request_id.filters.RequestIDFilter"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+            "filters": ["request_id"],
+        },
+    },
+    "loggers": {
+        # Default logger for any logger name
+        "": {
+            "level": "INFO",
+            "handlers": ["console", ],
+            "propagate": False,
+        },
+        # Logger for django server logs with django.server logger name
+        "django.server": {
+            "level": "DEBUG",
+            "handlers": ["console", ],
+            "propagate": False,
+        },
+    },
+}
+logging.config.dictConfig(LOGGING)  # Finally replace our config in python logging
