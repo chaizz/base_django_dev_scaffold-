@@ -147,6 +147,25 @@ url = "https://mirrors.aliyun.com/pypi/simple"
 reference = "ali"
 
 [[package]]
+name = "django-simpleui"
+version = "2023.3.1"
+description = "django admin theme 鍚庡彴妯℃澘"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-simpleui-2023.3.1.tar.gz", hash = "sha256:510a3049e0d1f44b127d2d3d61050245894de939b1dedfabaf2fa92cd8b2c3a2"},
+]
+
+[package.dependencies]
+django = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.aliyun.com/pypi/simple"
+reference = "ali"
+
+[[package]]
 name = "djangorestframework"
 version = "3.14.0"
 description = "Web APIs for Django, made easy."
@@ -377,4 +396,4 @@ reference = "ali"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "00628fe6ffa9f89cd344a60cea4e3eb1e73e894b4defcf4b3d2b526a95833467"
+content-hash = "24747568422c165c572e98b7e46b564d2c967fdac8200f83065e90fe2ca131fc"

@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "simpleui",
     "django_comment_migrate",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -176,3 +177,21 @@ LOGGING = {
     },
 }
 logging.config.dictConfig(LOGGING)  # Finally replace our config in python logging
+
+# simple-ui 配置
+SIMPLEUI_LOGO = 'https://i.328888.xyz/2023/03/20/Pz1EL.png'  # 去掉默认的系统图标
+# 隐藏右侧SimpleUI广告链接和使用分析# 认Logo或换成自己Logo链接
+SIMPLEUI_HOME_INFO = False
+SIMPLEUI_ANALYSIS = False
+# 设置默认主题，指向主题css文件名。Admin Lte风格
+SIMPLEUI_DEFAULT_THEME = 'admin.lte.css'
+SIMPLEUI_CONFIG = {
+    # 开启排序和过滤功能, 不填此字段为默认排序和全部显示, 空列表[] 为全部不显示.
+    'menu_display': ['系统设置', ],
+}
+# 系统默认的菜单图标，注意key名为菜单上实际显示的名字，不是模型或App名。
+SIMPLEUI_ICON = {
+    '系统设置': 'fa-solid fa-gears',
+    # '用户管理': 'fas fa-user-tie',
+    # '图片管理': 'fa-solid fa-image'
+}
