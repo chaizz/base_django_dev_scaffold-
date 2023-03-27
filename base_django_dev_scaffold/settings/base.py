@@ -31,11 +31,12 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "django_comment_migrate",
     "django.contrib.admin",
+    "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "apps.system.SystemConfig",
+    "apps.system.apps.SystemConfig",
     "rest_framework",
     "rest_framework.authtoken"
 ]
