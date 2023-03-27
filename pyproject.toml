@@ -18,6 +18,7 @@ django-log-request-id = "^2.1.0"
 colorlog = "^6.7.0"
 django-simpleui = "^2023.3.1"
 djangorestframework-simplejwt = "^5.2.2"
+django-simple-captcha = "^0.5.17"
 
 
 [[tool.poetry.source]]

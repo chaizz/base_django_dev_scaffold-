@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "apps.system.apps.SystemConfig",
     "rest_framework",
     "rest_framework_simplejwt",
+    "captcha",
 ]
 
 MIDDLEWARE = [
@@ -203,3 +204,5 @@ SIMPLEUI_DEFAULT_THEME = 'admin.lte.css'
 #     # '用户管理': 'fas fa-user-tie',
 #     # '图片管理': 'fa-solid fa-image'
 # }
+
+
