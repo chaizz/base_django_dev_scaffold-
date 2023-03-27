@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "apps.system.apps.SystemConfig",
     "rest_framework",
-    "rest_framework.authtoken"
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -126,7 +126,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # rest framework 设置
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication', ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [ 'rest_framework_simplejwt.authentication.JWTAuthentication', ],
 
     # 全局接口版本
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",  # 正则形式

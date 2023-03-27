@@ -187,6 +187,36 @@ url = "https://mirrors.aliyun.com/pypi/simple"
 reference = "ali"
 
 [[package]]
+name = "djangorestframework-simplejwt"
+version = "5.2.2"
+description = "A minimal JSON Web Token authentication plugin for Django REST Framework"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "djangorestframework_simplejwt-5.2.2-py3-none-any.whl", hash = "sha256:4c0d2e2513e12587d93501ac091781684a216c3ee614eb3b5a10586aef5ca845"},
+    {file = "djangorestframework_simplejwt-5.2.2.tar.gz", hash = "sha256:d27d4bcac2c6394f678dea8b4d0d511c6e18a7f2eb8aaeeb8a7de601aeb77c42"},
+]
+
+[package.dependencies]
+django = "*"
+djangorestframework = "*"
+pyjwt = ">=1.7.1,<3"
+
+[package.extras]
+crypto = ["cryptography (>=3.3.1)"]
+dev = ["Sphinx (>=1.6.5,<2)", "cryptography", "flake8", "ipython", "isort", "pep8", "pytest", "pytest-cov", "pytest-django", "pytest-watch", "pytest-xdist", "python-jose (==3.3.0)", "sphinx-rtd-theme (>=0.1.9)", "tox", "twine", "wheel"]
+doc = ["Sphinx (>=1.6.5,<2)", "sphinx-rtd-theme (>=0.1.9)"]
+lint = ["flake8", "isort", "pep8"]
+python-jose = ["python-jose (==3.3.0)"]
+test = ["cryptography", "pytest", "pytest-cov", "pytest-django", "pytest-xdist", "tox"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.aliyun.com/pypi/simple"
+reference = "ali"
+
+[[package]]
 name = "mysqlclient"
 version = "2.1.1"
 description = "Python interface to MySQL"
@@ -306,6 +336,29 @@ url = "https://mirrors.aliyun.com/pypi/simple"
 reference = "ali"
 
 [[package]]
+name = "pyjwt"
+version = "2.6.0"
+description = "JSON Web Token implementation in Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "PyJWT-2.6.0-py3-none-any.whl", hash = "sha256:d83c3d892a77bbb74d3e1a2cfa90afaadb60945205d1095d9221f04466f64c14"},
+    {file = "PyJWT-2.6.0.tar.gz", hash = "sha256:69285c7e31fc44f68a1feb309e948e0df53259d579295e6cfe2b1792329f05fd"},
+]
+
+[package.extras]
+crypto = ["cryptography (>=3.4.0)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.4.0)", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
+docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
+tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.aliyun.com/pypi/simple"
+reference = "ali"
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -396,4 +449,4 @@ reference = "ali"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "24747568422c165c572e98b7e46b564d2c967fdac8200f83065e90fe2ca131fc"
+content-hash = "84ff61c363a8b91b0bb78fcff911b842a3be71342bd7984feca9fbb67820c08d"
