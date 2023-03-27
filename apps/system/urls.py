@@ -10,6 +10,10 @@
           2023/3/27 13:51
 -------------------------------------------------
 """
+from django.urls import path
+from rest_framework.authtoken import views
+
 urlpatterns = [
+    path('token-auth/', views.obtain_auth_token)
 
 ]
