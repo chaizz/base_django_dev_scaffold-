@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class User(AbstractUser):
+class Users(AbstractUser):
     # 删除字段
     first_name = None
     last_name = None
@@ -34,7 +34,7 @@ class User(AbstractUser):
         return self.nickname or self.username
 
     class Meta:
-        db_table = 'user'
+        db_table = 'users'
         verbose_name = '用户基础信息'
         verbose_name_plural = verbose_name
         ordering = ['id']

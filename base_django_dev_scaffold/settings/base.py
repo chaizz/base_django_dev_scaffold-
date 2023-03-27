@@ -126,4 +126,4 @@ REST_FRAMEWORK = {
 }
 
 
-AUTH_USER_MODEL = "system.User"
+AUTH_USER_MODEL = "system.Users"
