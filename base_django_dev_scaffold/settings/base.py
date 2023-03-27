@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import logging.config
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -127,7 +128,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # rest framework 设置
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [ 'rest_framework_simplejwt.authentication.JWTAuthentication', ],
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication', ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTTokenUserAuthentication', ],
 
     # 全局接口版本
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",  # 正则形式
@@ -206,3 +208,25 @@ SIMPLEUI_DEFAULT_THEME = 'admin.lte.css'
 # }
 
 
+# SIMPLE_JWT 配置
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),  # 认证的标签头，类似jwt token中的jwt
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',  # 身份验证的授权标头名称
+}
+
+
+
+AUTHENTICATION_BACKENDS = (
+    'utils.c_auth_backend.backend.MyModelBackendBackend',
+)
+
+
+
+# django simple captcha 配置
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 验证码类型， 简单算术
+CAPTCHA_TIMEOUT = 10  # 验证码过期时间，单位：分钟
