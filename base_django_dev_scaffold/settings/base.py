@@ -185,13 +185,13 @@ SIMPLEUI_HOME_INFO = False
 SIMPLEUI_ANALYSIS = False
 # 设置默认主题，指向主题css文件名。Admin Lte风格
 SIMPLEUI_DEFAULT_THEME = 'admin.lte.css'
-SIMPLEUI_CONFIG = {
-    # 开启排序和过滤功能, 不填此字段为默认排序和全部显示, 空列表[] 为全部不显示.
-    'menu_display': ['系统设置', ],
-}
+# SIMPLEUI_CONFIG = {
+#     # 开启排序和过滤功能, 不填此字段为默认排序和全部显示, 空列表[] 为全部不显示.
+#     'menu_display': ['系统设置', ],
+# }
 # 系统默认的菜单图标，注意key名为菜单上实际显示的名字，不是模型或App名。
-SIMPLEUI_ICON = {
-    '系统设置': 'fa-solid fa-gears',
-    # '用户管理': 'fas fa-user-tie',
-    # '图片管理': 'fa-solid fa-image'
-}
+# SIMPLEUI_ICON = {
+#     '系统设置': 'fa-solid fa-gears',
+#     # '用户管理': 'fas fa-user-tie',
+#     # '图片管理': 'fa-solid fa-image'
+# }
