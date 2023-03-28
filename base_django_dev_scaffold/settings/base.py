@@ -135,6 +135,10 @@ REST_FRAMEWORK = {
     # 修改默认返回JSON的renderer的类
     "DEFAULT_RENDERER_CLASSES": ("utils.c_restframework.c_renderer.custom_renderer",),
 
+    # 全局分页
+    'DEFAULT_PAGINATION_CLASS': "utils.c_restframework.c_pagination.MyPageNumberPagination",
+    'PAGE_SIZE': 50,  # 这是每页显示的数目
+
     # 全局接口版本
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",  # 正则形式
     "ALLOWED_VERSIONS": ["v1"],  # 允许的版本
