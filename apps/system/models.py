@@ -1,5 +1,20 @@
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser, Group, UserManager
 from django.db import models
+
+
+class MyUserManager(UserManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        """
+        创建普通用户
+        """
+
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        return self._create_user(username, email, password, **extra_fields)
 
 
 class Users(AbstractUser):
@@ -24,7 +39,7 @@ class Users(AbstractUser):
     birthday = models.DateField(db_column='birthday', null=True, blank=True, verbose_name='出生日期',
                                 help_text='出生日期')
 
-    email = models.EmailField(max_length=100, db_column='email', null=True, blank=True, verbose_name='邮箱',
+    email = models.EmailField(max_length=100, db_column='email', unique=True, verbose_name='邮箱',
                               help_text='邮箱，不超过100个字符')
 
     date_joined = models.DateTimeField(db_column='date_joined', auto_now_add=True, verbose_name='用户加入时间',
@@ -32,6 +47,11 @@ class Users(AbstractUser):
 
     def __str__(self):
         return self.nickname or self.username
+
+    EMAIL_FIELD = "email"
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email"]
+    objects = MyUserManager()
 
     class Meta:
         db_table = 'users'
