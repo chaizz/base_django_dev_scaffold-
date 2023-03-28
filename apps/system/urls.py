@@ -10,11 +10,14 @@
           2023/3/27 13:51
 -------------------------------------------------
 """
-from django.urls import path, include
-from apps.system.views import CaptchaAPIView, CaptchaRefreshAPIView, LoginTokenObtainPairView, DecoratedTokenRefreshView
+from django.urls import path
 
+from apps.system.views import CaptchaAPIView, CaptchaRefreshAPIView, LoginTokenObtainPairView, \
+    DecoratedTokenRefreshView, RegisterView
 
 urlpatterns = [
+
+    path('register', RegisterView.as_view(), name='auth_register'),
 
     path('login', LoginTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh', DecoratedTokenRefreshView.as_view(), name='token_refresh'),

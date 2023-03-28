@@ -11,35 +11,42 @@
 -------------------------------------------------
 """
 
-from rest_framework import serializers
 from captcha.models import CaptchaStore
+from django.contrib.auth.password_validation import validate_password
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from apps.system.models import Users
+from utils.c_restframework.c_validator import CustomValidationError
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     重写TokenObtainPairSerializer类的部分方法以实现自定义数据响应结构和payload内容
     """
-    captcha_key = serializers.CharField(required=True,
-                                        trim_whitespace=True,
-                                        error_messages={"required": "请输入图片验证码"},
-                                        help_text="算术验证码")
-    captcha_id = serializers.CharField(required=True, write_only=True,
-                                       help_text="验证码ID")
+    captcha_key = serializers.CharField(
+        required=True,
+        help_text="验证码图案"
+    )
+    captcha_id = serializers.CharField(
+        required=True,
+        write_only=True,
+        help_text="验证码编码"
+    )
 
     def validate_captcha_key(self, captcha_key):
         # 验证码验证
         try:
             captcha = captcha_key.lower()
         except:
-            raise serializers.ValidationError("验证码错误")
+            raise CustomValidationError("验证码错误！")
         img_code = CaptchaStore.objects.filter(id=int(self.initial_data['captcha_id'])).first()
         if img_code and timezone.now() > img_code.expiration:
-            raise serializers.ValidationError("图片验证码过期")
+            raise CustomValidationError("验证码已过期！")
         if not img_code or img_code.response != captcha:
-            raise serializers.ValidationError("验证码错误")
+            raise CustomValidationError("验证码错误！")
 
     @classmethod
     def get_token(cls, user):
@@ -93,3 +100,43 @@ class TokenRefreshResponseSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         raise NotImplementedError()
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=Users.objects.all(), message="该用邮箱已注册！")]
+    )
+    username = serializers.CharField(
+        required=True,
+        validators=[UniqueValidator(queryset=Users.objects.all(), message="该用户名已存在!")]
+    )
+
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = Users
+        fields = ("username", 'email', 'password', 'password2')
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise CustomValidationError({"password": "两次密码不一致！"})
+        return attrs
+
+    # def validate_password(self, attrs):
+    # res_pwd = re.search(r"^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){5,29}$", passwd)  # 密码规则  字母开头，6-30，字母数字下划线点
+    # if not res_pwd:
+    #     return JsonResponse(data={
+    #         "status": 11013,
+    #         'msg': '密码不符和规范！'}
+    #     )
+
+    def create(self, validated_data):
+        user = Users.objects.create_user(
+            username=validated_data['email'],
+            email=validated_data["email"],
+            password=validated_data['password']
+        )
+        user.save()
+        return user

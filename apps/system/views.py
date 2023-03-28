@@ -1,15 +1,17 @@
 import base64
 
 from captcha.views import CaptchaStore, captcha_image
+from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
-TokenRefreshView
+    TokenRefreshView
 )
 
-from apps.system.serializers import MyTokenObtainPairSerializer
+from apps.system.models import Users
+from apps.system.serializers import MyTokenObtainPairSerializer, RegisterSerializer
 
 
 class CaptchaAPIView(APIView):
@@ -57,7 +59,16 @@ class LoginTokenObtainPairView(TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
 class DecoratedTokenRefreshView(TokenRefreshView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class RegisterView(CreateAPIView):
+    queryset = Users.objects.all()
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
