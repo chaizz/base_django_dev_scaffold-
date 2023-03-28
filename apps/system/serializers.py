@@ -85,7 +85,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 
-
 class TokenRefreshResponseSerializer(serializers.Serializer):
     access = serializers.CharField()
 

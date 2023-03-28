@@ -27,7 +27,9 @@ def custom_exception_handler(exc, context):
         if isinstance(exc, ValidationError):
             message = exc.detail
         elif isinstance(exc, APIException):
-            message = exc.default_detail
+            message = exc.detail
+            if isinstance(message, dict):
+                message = "".join(message.values())
         else:
             message = response.data.get("detail", None)
 
