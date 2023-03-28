@@ -1,7 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from apps.system.models import Users
-from django.contrib.auth.admin import UserAdmin
 
 
 @admin.register(Users)
@@ -32,3 +32,8 @@ class UserProfileAdmin(UserAdmin):
          ),
 
     )
+
+
+admin.site.site_header = "Django 开发脚手架"  # 设置header
+admin.site.site_title = 'Django 开发脚手架'  # 设置title
+admin.site.index_title = 'Django 开发脚手架'
