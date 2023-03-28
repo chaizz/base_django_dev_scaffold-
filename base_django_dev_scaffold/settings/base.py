@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import logging.config
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -125,11 +125,15 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 # rest framework 设置
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication', ],
-    # 'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTTokenUserAuthentication', ],
+
+    # 全局配置异常模块
+    'EXCEPTION_HANDLER': "utils.c_restframework.c_exception.custom_exception_handler",
+
+    # 修改默认返回JSON的renderer的类
+    "DEFAULT_RENDERER_CLASSES": ("utils.c_restframework.c_renderer.custom_renderer",),
 
     # 全局接口版本
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",  # 正则形式
@@ -219,13 +223,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',  # 身份验证的授权标头名称
 }
 
-
-
 AUTHENTICATION_BACKENDS = (
     'utils.c_auth_backend.backend.MyModelBackendBackend',
 )
-
-
 
 # django simple captcha 配置
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 验证码类型， 简单算术
