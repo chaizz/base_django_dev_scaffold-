@@ -103,11 +103,16 @@ class TokenRefreshResponseSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    """
+    每个字段设置为 write_only , 反序列化不返回字段。
+    """
     email = serializers.EmailField(
+        write_only=True,
         required=True,
         validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该邮箱已注册！")]
     )
     username = serializers.CharField(
+        write_only=True,
         required=True,
         validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该用户名已存在!")]
     )
@@ -123,14 +128,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         if attrs['password'] != attrs['password2']:
             raise CustomValidationError({"password": "两次密码不一致！"})
         return attrs
-
-    # def validate_password(self, attrs):
-    # res_pwd = re.search(r"^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){5,29}$", passwd)  # 密码规则  字母开头，6-30，字母数字下划线点
-    # if not res_pwd:
-    #     return JsonResponse(data={
-    #         "status": 11013,
-    #         'msg': '密码不符和规范！'}
-    #     )
 
     def create(self, validated_data):
         user = Users.objects.create_user(
