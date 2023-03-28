@@ -1,10 +1,11 @@
 from django.contrib import admin
 
 from apps.system.models import Users
+from django.contrib.auth.admin import UserAdmin
 
 
 @admin.register(Users)
-class UserProfileAdmin(admin.ModelAdmin):
+class UserProfileAdmin(UserAdmin):
     list_display = ("username", "nickname", "gender", "email", "phone_number")
     list_display_links = ("username", "nickname")
     list_filter = ("phone_number",)
