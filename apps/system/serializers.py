@@ -19,7 +19,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from apps.system.models import Users
-from utils.c_restframework.c_validator import CustomValidationError
+from utils.c_restframework.c_validator import CustomValidationError, CustomUniqueValidator
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -105,11 +105,11 @@ class TokenRefreshResponseSerializer(serializers.Serializer):
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
-        validators=[UniqueValidator(queryset=Users.objects.all(), message="该用邮箱已注册！")]
+        validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该邮箱已注册！")]
     )
     username = serializers.CharField(
         required=True,
-        validators=[UniqueValidator(queryset=Users.objects.all(), message="该用户名已存在!")]
+        validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该用户名已存在!")]
     )
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])

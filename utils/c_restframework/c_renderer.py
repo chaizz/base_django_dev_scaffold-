@@ -22,7 +22,7 @@ class custom_renderer(JSONRenderer):
         if not renderer_context:
             return super().render(data, accepted_media_type, renderer_context)
 
-        if renderer_context["response"].status_code == 200:
+        if renderer_context["response"].status_code == 200 or renderer_context["response"].status_code == 201:
             data = {
                 "status_code": 200,
                 "message": "success",
