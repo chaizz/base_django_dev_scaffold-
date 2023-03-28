@@ -127,7 +127,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # rest framework 设置
 REST_FRAMEWORK = {
+    # 认证
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication', ],
+
+    # 权限
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated', ],
 
     # 全局配置异常模块
     'EXCEPTION_HANDLER': "utils.c_restframework.c_exception.custom_exception_handler",
