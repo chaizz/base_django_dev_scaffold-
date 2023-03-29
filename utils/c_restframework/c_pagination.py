@@ -18,7 +18,7 @@ from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.pagination import _positive_int
-from rest_framework.response import Response
+from utils.c_restframework.c_response import JsonResponse
 
 
 class PaginationException(APIException):
@@ -79,7 +79,7 @@ class MyPageNumberPagination(PageNumberPagination):
         :param data:返回的数据
         :return:
         """
-        return Response(OrderedDict([
+        return JsonResponse(OrderedDict([
             ('count', self.page.paginator.count),
             ('next', self.get_next_link()),
             ('previous', self.get_previous_link()),
