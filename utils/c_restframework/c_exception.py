@@ -11,35 +11,47 @@
 -------------------------------------------------
 """
 
-from rest_framework.exceptions import APIException, ValidationError
-from rest_framework.views import exception_handler, Response, status
+from utils.c_restframework.c_validator import CustomUniqueValidator, CustomValidationError
+from rest_framework.views import exception_handler
+from utils.c_restframework.c_response import JsonResponse
+from rest_framework.exceptions import ValidationError
 
 
 def custom_exception_handler(exc, context):
-    """
-    统一返回错误格式
-    """
+
+    message = '服务器错误'
+
     response = exception_handler(exc, context)
-
-    # Now add the HTTP status code to the response.
-    if response is not None:
-        status_code = response.status_code
-        if isinstance(exc, ValidationError):
+    # 自定义异常抛出错误！
+    if isinstance(exc, (CustomValidationError, CustomUniqueValidator, ValidationError)):
+        if isinstance(response.data, dict):
             message = exc.detail
-        elif isinstance(exc, APIException):
-            message = exc.detail
-            if isinstance(message, dict):
-                message = "".join(message.values())
         else:
-            message = response.data.get("detail", None)
+            message = '字段校验错误'
+        return JsonResponse(msg=message, code=response.status_code)
 
-    else:
-        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        message = str(exc)
+    if response is not None:
+        if response.status_code == 404:
+            try:
+                message = exc.detail
+            except KeyError:
+                message = "未找到"
 
-    data = {
-        "status_code": status_code,
-        "message": message,
-        "data": {},
-    }
-    return Response(data, status=status_code)
+        if response.status_code == 400:
+            message = '输入错误'
+
+        elif response.status_code == 401:
+            try:
+                message = exc.default_detail
+            except Exception:
+                message = "认证失败或者Token失效"
+
+        elif response.status_code == 403:
+            message = "权限不允许"
+
+        elif response.status_code == 405:
+            message = '请求不允许'
+        
+        elif response.status_code >= 500:
+            message = "服务器错误"
+    return JsonResponse(msg=message, code=response.status_code)
