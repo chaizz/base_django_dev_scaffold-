@@ -16,7 +16,7 @@ from rest_framework import status
 from utils.c_restframework.c_response import JsonResponse
 
 
-class ListCreateAPIView(generics.ListCreateAPIView):
+class CustomListCreateAPIView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -37,7 +37,7 @@ class ListCreateAPIView(generics.ListCreateAPIView):
         return JsonResponse(data=serializer.data, code=200, msg="success", status=status.HTTP_200_OK)
 
 
-class RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class CustomRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

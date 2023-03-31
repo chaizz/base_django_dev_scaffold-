@@ -24,10 +24,7 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
     # 自定义异常抛出错误！
     if isinstance(exc, (CustomValidationError, CustomUniqueValidator, ValidationError)):
-        if isinstance(response.data, dict):
-            message = exc.detail
-        else:
-            message = '字段校验错误'
+        message = exc.detail if isinstance(response.data, dict) else '字段校验错误'
         return JsonResponse(msg=message, code=response.status_code)
 
     if response is not None:
@@ -47,11 +44,11 @@ def custom_exception_handler(exc, context):
                 message = "认证失败或者Token失效"
 
         elif response.status_code == 403:
-            message = "权限不允许"
+            message = "没有相应的权限"
 
         elif response.status_code == 405:
-            message = '请求不允许'
-        
+            message = '错误的请求方法'
+
         elif response.status_code >= 500:
             message = "服务器错误"
     return JsonResponse(msg=message, code=response.status_code)

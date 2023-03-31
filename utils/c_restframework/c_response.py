@@ -40,13 +40,7 @@ class JsonResponse(Response):
 
         # 兼容如果msg是字典， 将字典改为 字符串
         if isinstance(msg, dict):
-            msgg = ""
-            for k, v in msg.items():
-                print(k)
-                if isinstance(v, list):
-                    msgg += f"{k}:{''.join(v)} "
-            msg = msgg
-
+            msg = "".join(''.join(v) for k, v in msg.items() if isinstance(v, list))
         # 修改Response的 data格式
         self.data = {"code": code, "message": msg, "data": data} | kwargs
         self.template_name = template_name
@@ -56,3 +50,19 @@ class JsonResponse(Response):
         if headers:
             for name, value in headers.items():
                 self[name] = value
+
+
+class ErrorResponse(Response):
+    """
+    标准响应错误的返回,ErrorResponse(msg='xxx')
+    (1)默认错误码返回400, 也可以指定其他返回码:ErrorResponse(code=xxx)
+    """
+
+    def __init__(self, data=None, msg='error', code=400, status=None, template_name=None, headers=None,
+                 exception=False, content_type=None):
+        std_data = {
+            "code": code,
+            "data": data,
+            "msg": msg
+        }
+        super().__init__(std_data, status, template_name, headers, exception, content_type)

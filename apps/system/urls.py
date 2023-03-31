@@ -10,10 +10,14 @@
           2023/3/27 13:51
 -------------------------------------------------
 """
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 
 from apps.system.views import CaptchaAPIView, CaptchaRefreshAPIView, LoginTokenObtainPairView, \
-    DecoratedTokenRefreshView, RegisterView
+    DecoratedTokenRefreshView, RegisterView, UsersViewSet
+
+router = routers.SimpleRouter(trailing_slash=False)
+router.register('users', UsersViewSet)
 
 urlpatterns = [
 
@@ -24,4 +28,6 @@ urlpatterns = [
 
     path('captcha', CaptchaAPIView.as_view(), name='captcha_api'),
     path('captcha/refresh', CaptchaRefreshAPIView.as_view(), name='captcha_refresh'),
+
+    path('', include(router.urls)),
 ]

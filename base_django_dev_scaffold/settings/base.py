@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 import logging.config
 from datetime import timedelta
 from pathlib import Path
@@ -81,8 +81,13 @@ WSGI_APPLICATION = "base_django_dev_scaffold.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        "NAME": "django-miniapp",
+        'USER': os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
 
@@ -137,7 +142,7 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': "utils.c_restframework.c_exception.custom_exception_handler",
 
     # 修改默认返回JSON的renderer的类
-    "DEFAULT_RENDERER_CLASSES": ("utils.c_restframework.c_renderer.custom_renderer",),
+    # "DEFAULT_RENDERER_CLASSES": ("utils.c_restframework.c_renderer.custom_renderer",),
 
     # 全局分页
     'DEFAULT_PAGINATION_CLASS': "utils.c_restframework.c_pagination.MyPageNumberPagination",
@@ -238,3 +243,19 @@ AUTHENTICATION_BACKENDS = (
 # django simple captcha 配置
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 验证码类型， 简单算术
 CAPTCHA_TIMEOUT = 10  # 验证码过期时间，单位：分钟
+
+
+
+
+# django cache
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/{os.getenv('REDIS_DB')}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": os.getenv("REDIS_PASSWORD")
+        }
+    }
+}

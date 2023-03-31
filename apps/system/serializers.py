@@ -11,11 +11,12 @@
 -------------------------------------------------
 """
 
+import re
+
 from captcha.models import CaptchaStore
 from django.contrib.auth.password_validation import validate_password
 from django.utils import timezone
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from apps.system.models import Users
@@ -41,12 +42,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         try:
             captcha = captcha_key.lower()
         except:
-            raise CustomValidationError("验证码错误！")
+            raise CustomValidationError("验证码错误")
         img_code = CaptchaStore.objects.filter(id=int(self.initial_data['captcha_id'])).first()
         if img_code and timezone.now() > img_code.expiration:
-            raise CustomValidationError("验证码已过期！")
+            raise CustomValidationError("验证码已过期")
         if not img_code or img_code.response != captcha:
-            raise CustomValidationError("验证码错误！")
+            raise CustomValidationError("验证码错误")
 
     @classmethod
     def get_token(cls, user):
@@ -109,15 +110,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         write_only=True,
         required=True,
-        validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该邮箱已注册！")]
+        validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该邮箱已注册")]
     )
     username = serializers.CharField(
         write_only=True,
         required=True,
-        validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该用户名已存在!")]
+        validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该用户名已存在")]
     )
 
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password = serializers.CharField(write_only=True, required=True)
     password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta:
@@ -126,14 +127,65 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
-            raise CustomValidationError({"password": "两次密码不一致！"})
+            raise CustomValidationError({"password": "两次密码不一致"})
         return attrs
+
+    def validate_password(self, value):
+        "正则匹配密码"
+        if re.search(r"^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){5,29}$", value):
+            return value
+        else:
+            raise CustomValidationError("密码不符合规则：必须字母开头，6到30个字符，必须包含数字下划线点")
 
     def create(self, validated_data):
         user = Users.objects.create_user(
-            username=validated_data['email'],
+            username=validated_data['username'],
             email=validated_data["email"],
             password=validated_data['password']
         )
         user.save()
         return user
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = "__all__"
+
+
+
+class OtherUserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ("nickname", "introduction", "gender")
+
+
+class UserInfoUpdateSerializer(serializers.ModelSerializer):
+    """
+    用户修改-序列化器
+    """
+    phone_number = serializers.CharField(
+        max_length=11,
+        validators=[
+            CustomUniqueValidator(queryset=Users.objects.all(), message="手机号必须唯一")
+        ],
+        allow_blank=True
+    )
+
+    email = serializers.EmailField(
+        required=True,
+        validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该邮箱已注册")]
+    )
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    class Meta:
+        model = Users
+        fields = ['nickname',
+                  'introduction',
+                  'gender',
+                  'phone_number',
+                  'gender',
+                  'birthday',
+                  'email'
+                  ]
