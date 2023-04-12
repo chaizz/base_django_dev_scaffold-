@@ -20,11 +20,11 @@ User = get_user_model()
 class MyModelBackendBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username is None or password is None:
-            return
+            return None
         try:
             user = User.objects.get(
-                Q(username=username) | Q(email=username) | Q(phone_number=username) & Q(is_active=True))
+                Q(username=username) | Q(email=username) & Q(is_active=True))
             if user.check_password(password):
                 return user
-        except Exception as e:
+        except Exception:
             return None

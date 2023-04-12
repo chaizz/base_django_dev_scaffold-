@@ -14,13 +14,15 @@
 import re
 
 from captcha.models import CaptchaStore
-from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from apps.system.models import Users
 from utils.c_restframework.c_validator import CustomValidationError, CustomUniqueValidator
+
+User = get_user_model()
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -78,18 +80,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         :param attrs: 請求參數
         :return: 响应数据
         """
-        # data是个字典
-        # 其结构为：{'refresh': '用于刷新token的令牌', 'access': '用于身份验证的Token值'}
         data = super().validate(attrs)
-
-        # 获取Token对象
         refresh = self.get_token(self.user)
-        # 令牌到期时间
         data['expire'] = refresh.access_token.payload['exp']  # 有效期
-        # 用户名
         data['username'] = self.user.username
-        # 用户组 ()
-        # data["groups"] = self.user.groups
+
         return data
 
 
@@ -153,11 +148,10 @@ class UserInfoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 class OtherUserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ("nickname", "introduction", "gender")
+        fields = ("nickname", "introduction")
 
 
 class UserInfoUpdateSerializer(serializers.ModelSerializer):
@@ -176,6 +170,7 @@ class UserInfoUpdateSerializer(serializers.ModelSerializer):
         required=True,
         validators=[CustomUniqueValidator(queryset=Users.objects.all(), message="该邮箱已注册")]
     )
+
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
 

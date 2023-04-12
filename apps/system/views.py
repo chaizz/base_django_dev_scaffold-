@@ -1,6 +1,7 @@
 import base64
 
 from captcha.views import CaptchaStore, captcha_image
+from django.contrib.auth.hashers import make_password
 from rest_framework.decorators import action
 from rest_framework.exceptions import status
 from rest_framework.permissions import AllowAny
@@ -10,7 +11,6 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
-from django.contrib.auth.hashers import make_password
 
 from apps.system.models import Users
 from apps.system.serializers import MyTokenObtainPairSerializer, RegisterSerializer, UserInfoUpdateSerializer
@@ -106,7 +106,7 @@ class UsersViewSet(CustomModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
-    @action(methods=["PUT"], detail=True, permission_classes=[IsAdminPermission], url_name="change_password")
+    @action(methods=["PUT"], detail=True, permission_classes=[IsAuthenticated], url_name="change_password")
     def change_password(self, request, *args, **kwargs):
         """
         管理员修改用户密码
@@ -119,7 +119,6 @@ class UsersViewSet(CustomModelViewSet):
         request.user.password = make_password(new_pwd)
         request.user.save()
         return JsonResponse(data=None, msg="修改成功")
-
 
     @action(methods=["PUT"], detail=False, permission_classes=[IsAuthenticated], url_name="update_info")
     def update_user_info(self, request):
