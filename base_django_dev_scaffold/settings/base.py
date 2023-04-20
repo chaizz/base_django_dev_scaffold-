@@ -13,6 +13,8 @@ import logging.config
 import os
 from datetime import timedelta
 from pathlib import Path
+from kombu import Exchange, Queue
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -311,3 +313,70 @@ CACHES = {
         }
     },
 }
+
+
+
+# Celery 配置
+# =========================================
+# Celery 配置 (官方建议小写)
+# =========================================
+CELERY_BROKER_URL = os.getenv("BROKER_URL")
+CELERY_timezone = "Asia/Shanghai"
+CELERY_ENABLE_UTC = False
+CELERY_BEAT_SCHEDULER = "redbeat.RedBeatScheduler"
+# 一次预取多少消息乘以并发进程数。默认值为 4。
+# 如果您有许多短期运行的任务，并且吞吐量 / 往返延迟对您很重要，那么这个数字应该很大。
+# 如果消息已经被预取并且在内存中可用，则工作人员每秒能够处理更多任务。您可能需要进行试验才能找到最适合您的价值。
+# 在这些情况下，像50或150这样的值可能有意义。说64或128。
+CELERY_WORKER_PREFETCH_MULTIPLIER = int(os.getenv("WORKER_PREFETCH_MULTIPLIER") or 1)
+# 每个worker 执行的最大任务数，达到以后销毁重新建立新的worker
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 100
+# 工作人员在被新工作人员替换之前可能消耗的最大驻留内存量（以千字节为单位）。如果单个任务导致工人超过此限制，则任务将完成，之后将更换工人。
+# worker_max_memory_per_child = 12000  # 12MB
+# 执行任务的并发工作进程 / 线程 / 绿色线程的数量。
+CELERY_WORKER_CONCURRENCY = int(os.getenv("WORKER_CONCURRENCY") or 4)
+# 以秒为单位的任务时间限制。超过此值时，处理任务的worker将被杀死并用新的worker替换。
+CELERY_TASK_TIME_LIMIT = 60
+
+# delivery_mode = 1， 消息仅保留在内存里，重启丢失。
+# delivery_mode = 2， 消息保存在内存和硬盘里，重启不丢失，默认值。
+# CELERY_TASK_QUEUES = (
+#     Queue('alarm_task', Exchange('alarm_task', delivery_mode=1), routing_key='alarm_task', durable=False),
+#     Queue('diagnosis_task', Exchange('diagnosis_task', delivery_mode=1), routing_key='diagnosis_task',
+#           durable=False),
+#
+# )
+#
+# CELERY_TASK_ROUTES = {
+#     'alarm.tasks.equipment_alarm': {'queue': 'alarm_task', 'routing_key': 'alarm_task'},
+#     'diagnosis.tasks.auto_diagnosis': {'queue': 'diagnosis_task', 'routing_key': 'diagnosis_task'},
+#
+# }
+
+
+# 定时任务
+CELERY_BEAT_SCHEDULE = {
+    'add-every-30-seconds': {
+        'task': 'apps.system.tasks.delete_expired_captcha',
+        'schedule': 30.0,
+    },
+
+    'add-every-5-seconds': {
+        'task': 'apps.system.tasks.add',
+        'schedule': 5.0,
+        'args': (16, 16)
+    },
+
+}
+
+# =========================================
+# redbeat 设置 (小写)
+# =========================================
+redbeat_redis_url = os.getenv("REDBEAT_REDIS_URL")
+redbeat_lock_key = None
+beat_max_loop_interval = 10  # 监听频率，秒
+# 在定时任务数量大的时候，如果无法在锁超时时间内send完毕所有的任务。
+# 则会出现  【Cannot release a lock that's no longer owned】的错误
+# redbeat_lock_timeout 必须要大beat 调度所有的任务的时间。
+redbeat_lock_timeout = int(
+    os.getenv("REDBEAT_LOCK_TIMEOUT") or beat_max_loop_interval * 60)  # 锁超时，秒 【暂定为 10 * 60】 10分钟

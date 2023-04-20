@@ -18,6 +18,9 @@ User = get_user_model()
 
 
 class MyModelBackendBackend(ModelBackend):
+    """
+    添加邮箱和用户名登录校验
+    """
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username is None or password is None:
             return None
