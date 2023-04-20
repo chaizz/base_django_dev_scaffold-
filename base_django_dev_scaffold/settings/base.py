@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import os
 import logging.config
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -53,6 +53,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "utils.c_middleware.token_exception.TokenExceptionMiddleware",
 ]
 
 ROOT_URLCONF = "base_django_dev_scaffold.urls"
@@ -228,7 +229,7 @@ SIMPLEUI_DEFAULT_THEME = 'admin.lte.css'
 # SIMPLE_JWT 配置
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
@@ -242,20 +243,71 @@ AUTHENTICATION_BACKENDS = (
 
 # django simple captcha 配置
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 验证码类型， 简单算术
-CAPTCHA_TIMEOUT = 10  # 验证码过期时间，单位：分钟
-
-
+CAPTCHA_TIMEOUT = 60 * 24  # 验证码过期时间，单位：分钟
 
 
 # django cache
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/{os.getenv('REDIS_DB')}",
+        "LOCATION": [
+            f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/{os.getenv('REDIS_DB')}",
+        ],
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PASSWORD": os.getenv("REDIS_PASSWORD")
         }
-    }
+    },
+    'session': {  # 缓存session
+        'BACKEND': 'django_redis.cache.RedisCache',  # 缓存后端 Redis
+        # 连接Redis数据库(服务器地址)
+        # 一主带多从(可以配置多个Redis，写走第一台，读走其他的机器)
+        "LOCATION": [
+            f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/{os.getenv('REDIS_DB')}",
+        ],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": os.getenv("REDIS_PASSWORD"),
+            'CONNECTION_POOL_KWARGS': {'decode_responses': True},  # 添加这一行,防止取出的值带有b'' bytes
+        }
+    },
+    'verify_codes': {  # 缓存短信验证码
+        'BACKEND': 'django_redis.cache.RedisCache',  # 缓存后端 Redis
+        # 连接Redis数据库(服务器地址)
+        # 一主带多从(可以配置多个Redis，写走第一台，读走其他的机器)
+        "LOCATION": [
+            f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/{os.getenv('REDIS_DB')}",
+        ],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": os.getenv("REDIS_PASSWORD"),
+            'CONNECTION_POOL_KWARGS': {'decode_responses': True},  # 添加这一行,防止取出的值带有b'' bytes
+        }
+    },
+    "authapi": {  # 接口安全校验（验证接口重复第二次访问会拒绝）
+        'BACKEND': 'django_redis.cache.RedisCache',  # 缓存后端 Redis
+        # 连接Redis数据库(服务器地址)
+        # 一主带多从(可以配置多个Redis，写走第一台，读走其他的机器)
+        "LOCATION": [
+            f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/{os.getenv('REDIS_DB')}",
+        ],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": os.getenv("REDIS_PASSWORD"),
+            'CONNECTION_POOL_KWARGS': {'decode_responses': True},  # 添加这一行,防止取出的值带有b'' bytes
+        }
+    },
+    "singletoken": {  # jwt单用户登录（确保一个账户只有一个地点登录，后一个会顶掉前一个）
+        'BACKEND': 'django_redis.cache.RedisCache',  # 缓存后端 Redis
+        # 连接Redis数据库(服务器地址)
+        # 一主带多从(可以配置多个Redis，写走第一台，读走其他的机器)
+        "LOCATION": [
+            f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', 6379)}/{os.getenv('REDIS_DB')}",
+        ],
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',  # 连接选项(默认，不改)
+            "PASSWORD": os.getenv("REDIS_PASSWORD"),
+            'CONNECTION_POOL_KWARGS': {'decode_responses': True},  # 添加这一行,防止取出的值带有b'' bytes
+        }
+    },
 }

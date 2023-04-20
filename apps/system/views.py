@@ -1,7 +1,8 @@
 import base64
-
+from base_django_dev_scaffold.settings.base import CAPTCHA_TIMEOUT
 from captcha.views import CaptchaStore, captcha_image
 from django.contrib.auth.hashers import make_password
+from django_redis import get_redis_connection
 from rest_framework.decorators import action
 from rest_framework.exceptions import status
 from rest_framework.permissions import AllowAny
@@ -29,15 +30,18 @@ class CaptchaAPIView(APIView):
         hashkey = CaptchaStore.generate_key()
         try:
             # 获取图片id
-            id_ = CaptchaStore.objects.filter(hashkey=hashkey).first().id
-            imgage = captcha_image(request, hashkey)
+            # id_ = CaptchaStore.objects.filter(hashkey=hashkey).first().id
+            id, response = CaptchaStore.objects.filter(hashkey=hashkey).values_list("id", "response").first()
+
+            image = captcha_image(request, hashkey)
             # 将图片转换为base64
-            image_base = f"data:image/png;base64,{base64.b64encode(imgage.content).decode('utf-8')}"
-            json_data = {"captcha_id": id_, "captcha_key": image_base}
-            # 批量删除过期验证码
-            # CaptchaStore.remove_expired()
+            image_base = f"data:image/png;base64,{base64.b64encode(image.content).decode('utf-8')}"
+            json_data = {"captcha_id": id, "captcha_key": image_base}
+            #  将验证码写入redis
+            redis_conn = get_redis_connection('verify_codes')
+            redis_conn.setex(f"captcha:{id}", CAPTCHA_TIMEOUT, response)
         except Exception:
-            json_data = None
+            return ErrorResponse(msg="获取验证码失败！")
         return JsonResponse(data=json_data)
 
 
@@ -86,7 +90,8 @@ class RegisterView(CustomListCreateAPIView):
 class UsersViewSet(CustomModelViewSet):
     serializer_class = UserInfoSerializer
     queryset = Users.objects.all()
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = ()
+    # permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

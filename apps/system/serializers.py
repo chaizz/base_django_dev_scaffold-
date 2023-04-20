@@ -13,9 +13,8 @@
 
 import re
 
-from captcha.models import CaptchaStore
 from django.contrib.auth import get_user_model
-from django.utils import timezone
+from django_redis import get_redis_connection
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -45,11 +44,17 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
             captcha = captcha_key.lower()
         except:
             raise CustomValidationError("验证码错误")
-        img_code = CaptchaStore.objects.filter(id=int(self.initial_data['captcha_id'])).first()
-        if img_code and timezone.now() > img_code.expiration:
-            raise CustomValidationError("验证码已过期")
-        if not img_code or img_code.response != captcha:
-            raise CustomValidationError("验证码错误")
+
+        # 在数据中校验验证码
+        # img_code = CaptchaStore.objects.filter(id=int(self.initial_data['captcha_id'])).first()
+        # if img_code and timezone.now() > img_code.expiration:
+        #     raise CustomValidationError("验证码已过期")
+
+        # 从redis中校验验证码
+        redis_conn = get_redis_connection('verify_codes')
+        img_code = redis_conn.get(f"captcha:{self.initial_data['captcha_id']}")
+        if not img_code or  img_code != captcha:
+            raise CustomValidationError("验证码错误或已过期！")
 
     @classmethod
     def get_token(cls, user):
