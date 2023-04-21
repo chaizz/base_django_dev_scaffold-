@@ -10,14 +10,15 @@
           2023/4/20 14:51
 -------------------------------------------------
 """
-import os
-
 from celery import Celery
-from celery import platforms
+
+from .settings import set_environ
 
 # Set the default Django settings module for the 'celery' program.
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "base_django_dev_scaffold.settings.dev")
+# 指定 当前的配置文件
+
+set_environ()
 
 app = Celery('base_django_dev_scaffold')
 # Using a string here means the worker doesn't have to serialize
@@ -25,7 +26,6 @@ app = Celery('base_django_dev_scaffold')
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
-
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()

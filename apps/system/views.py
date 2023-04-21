@@ -1,5 +1,5 @@
 import base64
-from base_django_dev_scaffold.settings.base import CAPTCHA_TIMEOUT
+
 from captcha.views import CaptchaStore, captcha_image
 from django.contrib.auth.hashers import make_password
 from django_redis import get_redis_connection
@@ -16,9 +16,10 @@ from rest_framework_simplejwt.views import (
 from apps.system.models import Users
 from apps.system.serializers import MyTokenObtainPairSerializer, RegisterSerializer, UserInfoUpdateSerializer
 from apps.system.serializers import UserInfoSerializer, OtherUserInfoSerializer
+from base_django_dev_scaffold.settings.base import CAPTCHA_TIMEOUT
 from utils.c_restframework.c_generics import CustomListCreateAPIView
 from utils.c_restframework.c_modelviewset import CustomModelViewSet
-from utils.c_restframework.c_permission import IsOwnerOrReadOnly, IsAdminPermission
+from utils.c_restframework.c_permission import IsAdminPermission
 from utils.c_restframework.c_response import JsonResponse, ErrorResponse
 
 

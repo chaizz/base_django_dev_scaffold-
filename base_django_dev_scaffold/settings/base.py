@@ -13,8 +13,6 @@ import logging.config
 import os
 from datetime import timedelta
 from pathlib import Path
-from kombu import Exchange, Queue
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +26,7 @@ SECRET_KEY = "django-insecure-b(%nd+g-18%&5(s_ve$6x80xyfi*7sias17r6*dw(fmjhmx353
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
