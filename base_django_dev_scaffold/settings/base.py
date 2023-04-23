@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apps.system.apps.SystemConfig",
+    "apps.oauth.apps.OauthConfig",
     "rest_framework",
     "rest_framework_simplejwt",
     "captcha",
@@ -61,8 +62,7 @@ ROOT_URLCONF = "base_django_dev_scaffold.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates']
-        ,
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -245,7 +245,6 @@ AUTHENTICATION_BACKENDS = (
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 验证码类型， 简单算术
 CAPTCHA_TIMEOUT = 60 * 24  # 验证码过期时间，单位：分钟
 
-
 # django cache
 CACHES = {
     "default": {
@@ -311,8 +310,6 @@ CACHES = {
         }
     },
 }
-
-
 
 # Celery 配置
 # =========================================

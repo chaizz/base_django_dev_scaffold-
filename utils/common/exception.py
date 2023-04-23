@@ -30,3 +30,6 @@ class CusException(Exception):
 
 
 class SettingsException(CusException): ...
+
+
+class OAuthException(CusException): ...
