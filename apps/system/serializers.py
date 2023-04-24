@@ -53,7 +53,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # 从redis中校验验证码
         redis_conn = get_redis_connection('verify_codes')
         img_code = redis_conn.get(f"captcha:{self.initial_data['captcha_id']}")
-        if not img_code or  img_code != captcha:
+        if not img_code or img_code != captcha:
             raise CustomValidationError("验证码错误或已过期！")
 
     @classmethod

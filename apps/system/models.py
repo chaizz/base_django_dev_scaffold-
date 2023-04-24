@@ -45,6 +45,10 @@ class Users(AbstractUser):
     date_joined = models.DateTimeField(db_column='date_joined', auto_now_add=True, verbose_name='用户加入时间',
                                        help_text='用户注册时间')
 
+    avatar_url = models.CharField(max_length=255, null=True, blank=True, db_column='avatar_url',
+                                  verbose_name='头像地址',
+                                  help_text='头像地址，不超过255个字符')
+
     def __str__(self):
         return self.nickname or self.username
 

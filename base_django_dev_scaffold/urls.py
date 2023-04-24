@@ -20,5 +20,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     path('api/<str:version>/', include("apps.system.urls")),
-    path('api/<str:version>/allauth/', include("apps.oauth.urls"))
+    path('api/<str:version>/', include("apps.oauth.urls")),
 ]

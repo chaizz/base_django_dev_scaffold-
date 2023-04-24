@@ -10,13 +10,11 @@
           2023/4/23 13:50
 -------------------------------------------------
 """
-from django.urls import path, include
-from rest_framework import routers
+from django.urls import path
 
-
-from .views import GitHubOAuthView
+from .views import DingTalkOAuthView, GitHubOAuthView
 
 urlpatterns = [
-    path('github', GitHubOAuthView.as_view(), name='github_auth'),
-
+    path('github', GitHubOAuthView.as_view(), name='github_oauth'),
+    path('dingtalk', DingTalkOAuthView.as_view(), name='dingtalk_oauth'),
 ]

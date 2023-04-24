@@ -375,3 +375,11 @@ beat_max_loop_interval = 10  # 监听频率，秒
 # redbeat_lock_timeout 必须要大beat 调度所有的任务的时间。
 redbeat_lock_timeout = int(
     os.getenv("REDBEAT_LOCK_TIMEOUT") or beat_max_loop_interval * 60)  # 锁超时，秒 【暂定为 10 * 60】 10分钟
+
+# django allauth 配置
+
+GITHUB_CLIENT_ID = 'xxxxxxxxxxxxx'
+GITHUB_SECRET = 'xxxxxxxxxxxxxxxxxxx'
+
+DINGTALK_KEY = "xxxxxxxxxxxxxxxxxx"
+DINGTALK_SECRET = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
