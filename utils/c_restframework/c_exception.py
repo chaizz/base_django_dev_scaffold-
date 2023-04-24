@@ -59,7 +59,8 @@ def custom_exception_handler(exc, context):
 
         elif response.status_code == 405:
             message = '错误的请求方法！'
-
-        elif response.status_code >= 500:
-            message = "服务器错误！"
+        else:
+            message = message
+    else:
+        return JsonResponse(msg=str(exc), code=500)
     return JsonResponse(msg=message, code=response.status_code)
