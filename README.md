@@ -15,11 +15,30 @@ django基础服务开发脚手架 ，此项目部分代码来自其他开源项�
 - [x] **缓存**
 - [x] **集成任务调度模块Celery**
 - [ ] **集成第三方登录：Github/钉钉**
+  - [ ] **飞书/QQ/微信/微博/百度...**
 
 
 
 
-启动项目
-1. 复制base_django_dev_scaffold/settings 目录下 prod.py 到当前目录下，修改名称为 dev.py，并修改文件内的数据等参数。
-2. python manage.py runserver
+1、启动Django项目
+```shell
+# 1. 复制base_django_dev_scaffold/settings 目录下 prod.py 到当前目录下，修改名称为 dev.py，并修改文件内的数据等参数。
 
+# 在项目根目录下执行
+python manage.py runserver
+```
+
+
+2、启动 Celery 
+
+```shell
+# 在项目根目录下执行
+# windows 下指定 -P eventlet
+celery -A base_django_dev_scaffold worker -P eventlet -l info
+```
+
+3、启动 Celery Beat 
+```shell
+# 在项目根目录下执行
+celery -A base_django_dev_scaffold beat -l info
+```
